@@ -7,14 +7,14 @@ def find_dataset_using_name(dataset_name):
     # Given the option --dataset [datasetname],
     # the file "datasets/datasetname_dataset.py"
     # will be imported. 
-    dataset_filename = "data." + dataset_name + "_dataset"
+    dataset_filename = "data." + dataset_name + "_dataset" # data.fashion_dataset
     datasetlib = importlib.import_module(dataset_filename)
 
     # In the file, the class called DatasetNameDataset() will
     # be instantiated. It has to be a subclass of BaseDataset,
     # and it is case-insensitive.
     dataset = None
-    target_dataset_name = dataset_name.replace('_', '') + 'dataset'
+    target_dataset_name = dataset_name.replace('_', '') + 'dataset' # fashiondataset
     for name, cls in datasetlib.__dict__.items():
         if name.lower() == target_dataset_name.lower() \
            and issubclass(cls, BaseDataset):
@@ -34,7 +34,7 @@ def get_option_setter(dataset_name):
 
 
 def create_dataloader(opt):
-    dataset = find_dataset_using_name(opt.dataset_mode)
+    dataset = find_dataset_using_name(opt.dataset_mode) # opt.dataset_mode == 'fashion'
     instance = dataset()
     instance.initialize(opt)
     print("dataset [%s] of size %d was created" %

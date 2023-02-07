@@ -3,6 +3,7 @@ from options.train_options import TrainOptions
 import data as Dataset
 from model import create_model
 from util.visualizer import Visualizer
+from tqdm import tqdm
 
 
 if __name__ == '__main__':
@@ -68,6 +69,7 @@ if __name__ == '__main__':
                 model.save_networks(total_iteration)
 
             if total_iteration > max_iteration:
+                import pdb; pdb.set_trace()
                 keep_training = False
                 break
 

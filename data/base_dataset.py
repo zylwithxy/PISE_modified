@@ -50,7 +50,7 @@ class BaseDataset(data.Dataset):
         image_paths = []
         instance_paths = []
         par_paths = []
-        assert False, "A subclass of MarkovAttnDataset must override self.get_paths(self, opt)"
+        assert False, "A subclass of MarkovAttnDataset must override self.get_paths(self, opt)" # Which means the subclass should have .get_paths method to override get_paths method in baseclass
         return label_paths, image_paths, instance_paths, par_paths
 
     def __getitem__(self, index):

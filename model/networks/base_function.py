@@ -129,7 +129,7 @@ class VggEncoder(nn.Module):
         # self.vgg = models.vgg19(pretrained=True).features
         vgg19 = torchvision.models.vgg.vgg19(pretrained=False)
         #You can download vgg19-dcbb9e9d.pth from https://github.com/pytorch/vision/tree/master/torchvision/models and change the related path.
-        vgg19.load_state_dict(torch.load('/home/zjs/.torch/models/vgg19-dcbb9e9d.pth'))
+        vgg19.load_state_dict(torch.load('/media/beast/WD2T/XUEYu/dataset_pose_transfer/Pose_transfer_codes/deepfashion/vgg19-dcbb9e9d.pth'))
         self.vgg = vgg19.features
 
         for param in self.vgg.parameters():

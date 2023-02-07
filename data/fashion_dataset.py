@@ -26,12 +26,17 @@ class FashionDataset(BaseDataset):
     def get_paths(self, opt):
         root = opt.dataroot
         phase = opt.phase
-        pairLst = os.path.join(root, 'fasion-pairs-%s.csv' %phase)#'fasion-pairs-%s.csv' % phase)
+        # For adapting the name of ADGAN.
+        pairLst = os.path.join(root, 'fashion-resize-pairs-%s.csv' %phase)#'fasion-pairs-%s.csv' % phase)
+        # pairLst = os.path.join(root, 'fasion-pairs-%s.csv' %phase)#'fasion-pairs-%s.csv' % phase)
 #        pairLst = os.path.join(root, 'arbf_pres.csv')
         name_pairs = self.init_categories(pairLst)
         
-        image_dir = os.path.join(root, '%s' % phase)
-        bonesLst = os.path.join(root, 'fasion-annotation-%s.csv' %phase)#'fasion-annotation-%s.csv' % phase)
+        image_dir = os.path.join(root, 'fashion_resize','%s' % phase)
+        # image_dir = os.path.join(root, '%s' % phase)
+        
+        bonesLst = os.path.join(root, 'fasion-resize-annotation-%s.csv' %phase)
+        # bonesLst = os.path.join(root, 'fasion-annotation-%s.csv' %phase)#'fasion-annotation-%s.csv' % phase)
         par_dir = os.path.join(root, '%sSPL8' %phase)
         return image_dir, bonesLst, name_pairs, par_dir
 
