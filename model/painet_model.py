@@ -47,7 +47,7 @@ class Painet(BaseModel):
         self.loss_names = [ 'app_gen','content_gen', 'style_gen', #'reg_gen',
                            'ad_gen', 'dis_img_gen', 'par', 'par1']
 
-        self.visual_names = ['input_P1','input_P2', 'img_gen']
+        self.visual_names = ['input_P1','input_P2', 'img_gen', 'parsav', 'label_P2']
         self.model_names = ['G','D']
 
         self.FloatTensor = torch.cuda.FloatTensor if len(self.gpu_ids)>0 \
@@ -100,13 +100,13 @@ class Painet(BaseModel):
         input_P2, input_BP2, input_SPL2, label_P2 = input['P2'], input['BP2'], input['SPL2'], input['label_P2']
 
         if len(self.gpu_ids) > 0:
-            self.input_P1 = input_P1.cuda(self.gpu_ids[0], async=True)
-            self.input_BP1 = input_BP1.cuda(self.gpu_ids[0], async=True)
-            self.input_SPL1 = input_SPL1.cuda(self.gpu_ids[0], async=True)
-            self.input_P2 = input_P2.cuda(self.gpu_ids[0], async=True)
-            self.input_BP2 = input_BP2.cuda(self.gpu_ids[0], async=True)  
-            self.input_SPL2 = input_SPL2.cuda(self.gpu_ids[0], async=True)  
-            self.label_P2 = label_P2.cuda(self.gpu_ids[0], async=True)    
+            self.input_P1 = input_P1.cuda()
+            self.input_BP1 = input_BP1.cuda()
+            self.input_SPL1 = input_SPL1.cuda()
+            self.input_P2 = input_P2.cuda()
+            self.input_BP2 = input_BP2.cuda()  
+            self.input_SPL2 = input_SPL2.cuda()  
+            self.label_P2 = label_P2.cuda()    
 
         self.image_paths=[]
         for i in range(self.input_P1.size(0)):

@@ -12,7 +12,9 @@ class BaseModel():
         self.opt = opt
         self.gpu_ids = opt.gpu_ids
         self.isTrain = opt.isTrain
-        self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
+        self.save_dir = os.path.join(opt.expr_dir, 'save_models') if self.isTrain else os.path.join(opt.checkpoints_dir, opt.name, 'save_models')
+        if self.isTrain:
+            util.mkdirs(self.save_dir)
         self.loss_names = []
         self.model_names = []
         self.visual_names = []
@@ -97,19 +99,28 @@ class BaseModel():
                         visual_ret[name + str(i)] = self.convert2im(value[i], name)
                     # visual_ret[name] = util.tensor2im(value[-1].data)       
                 else:
-                    visual_ret[name] =self.convert2im(value, name)         
-        return visual_ret        
+                    visual_ret[name] =self.convert2im(value, name)
+                    
+        return_dict: OrderedDict[str, np.ndarray] = OrderedDict()
+        height, width = visual_ret['input_P1'].shape[:2]
+        full_vis = np.ones((height, width* len(self.visual_names), 3)).astype(np.uint8)
+        
+        for index, img_np in enumerate(visual_ret.values()):
+            full_vis[:, index * width:(index + 1) * width, :] = img_np
+            
+        return_dict[self.get_image_paths()[0]] = full_vis
+        
+        return return_dict  
 
     def convert2im(self, value, name):
-        if 'label' in name:
-            convert = getattr(self, 'label2color')
-            value = convert(value)
+        if name == 'label_P2':
+            result = util.tensor2im(value.data, need_dec= True)
 
-        if 'flow' in name: # flow_field
-            convert = getattr(self, 'flow2color')
-            value = convert(value)
+        elif name == 'parsav': # flow_field
+            labels_again = torch.argmax(value.data, dim=1).unsqueeze(1)
+            result = util.tensor2im(labels_again, need_dec= True)
 
-        if value.size(1) == 18: # bone_map
+        elif value.size(1) == 18: # bone_map
             value = np.transpose(value[0].detach().cpu().numpy(),(1,2,0))
             value = pose_utils.draw_pose_from_map(value)[0]
             result = value

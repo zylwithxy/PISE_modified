@@ -21,8 +21,13 @@ if __name__ == '__main__':
     # training flag
     keep_training = True
     max_iteration = opt.niter+opt.niter_decay
-    epoch = 0
-    total_iteration = opt.iter_count
+    
+    epoch = 0 if not opt.continue_train else model.opt.iter_count // len(dataset)
+    total_epoch = max_iteration // len(dataset) + 1
+    
+    total_iteration = opt.iter_count if not opt.continue_train else model.opt.iter_count
+    
+    pbar = tqdm(total= max_iteration - total_iteration)
 
     # training process
     while(keep_training):
@@ -46,7 +51,7 @@ if __name__ == '__main__':
             if total_iteration % opt.print_freq == 0:
                 losses = model.get_current_errors()
                 t = (time.time() - iter_start_time) / opt.batchSize
-                visualizer.print_current_errors(epoch, total_iteration, losses, t)
+                visualizer.print_current_errors(epoch, total_epoch, total_iteration, losses, t)
                 if opt.display_id > 0:
                     visualizer.plot_current_errors(total_iteration, losses)
 
@@ -69,9 +74,10 @@ if __name__ == '__main__':
                 model.save_networks(total_iteration)
 
             if total_iteration > max_iteration:
-                import pdb; pdb.set_trace()
                 keep_training = False
                 break
+            
+            pbar.update(1)
 
         model.update_learning_rate()
 

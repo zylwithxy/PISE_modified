@@ -9,6 +9,7 @@ import argparse
 from natsort import natsorted
 import sys
 from PIL import Image
+import matplotlib.pyplot as plt
 
 
 # convert a tensor into a numpy array
@@ -258,17 +259,38 @@ class flow2color():
         return image
 
 
-def save_image(image_numpy, image_path):
+def save_image(image_numpy: np.ndarray, image_path, label):
     #print(image_numpy.shape)
-    if image_numpy.shape[2] == 1:
-        image_numpy = image_numpy.reshape(image_numpy.shape[0], image_numpy.shape[1])
-    if image_numpy.shape[2] == 8:
-        image_numpy = np.argmax(image_numpy, axis=2)
-        image_numpy = image_numpy.reshape([image_numpy.shape[0], image_numpy.shape[1], 1])
-        image_numpy = decode_labels(image_numpy.astype(int))
+    
+    plt.imshow(image_numpy)
+    plt.axis('off')
+    
+    bbox_choice, pad_inches = 'tight', 0.05
+    DPI = 300
+    plt.savefig(image_path, dpi= DPI, bbox_inches= bbox_choice, pad_inches= pad_inches)
+    
+    # if label != 'label_P2':
+    #     if image_numpy.shape[2] == 1:
+    #         image_numpy = image_numpy.reshape(image_numpy.shape[0], image_numpy.shape[1])
+    #     if image_numpy.shape[2] == 8:
+    #         image_numpy = np.argmax(image_numpy, axis=2)
+    #         image_numpy = image_numpy.reshape([image_numpy.shape[0], image_numpy.shape[1], 1])
+    #         image_numpy = decode_labels(image_numpy.astype(int))
         
-
-    imageio.imwrite(image_path, image_numpy)
+    #     if label != 'parsav':
+    #         imageio.imwrite(image_path, image_numpy)
+    #     else:
+    #         plt.imshow(image_numpy)
+    #         plt.axis('off')
+    #         plt.savefig(image_path)
+        
+    # else:
+    #     # height, width = image_numpy.shape[:2]
+    #     # full_vis = np.ones((height, width, 3)).astype(np.uint8)
+    #     # full_vis[:, :, :] = image_numpy
+    #     plt.imshow(image_numpy)
+    #     plt.axis('off')
+    #     plt.savefig(image_path)
 
 def feature_normalize(feature_in):
     feature_in_norm = torch.norm(feature_in, 2, 1, keepdim=True) + sys.float_info.epsilon

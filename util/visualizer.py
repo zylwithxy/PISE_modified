@@ -19,15 +19,19 @@ class Visualizer():
             self.display_single_pane_ncols = opt.display_single_pane_ncols
 
         if self.use_html:
-            self.web_dir = os.path.join(opt.checkpoints_dir, opt.name, 'web')
+            self.web_dir = os.path.join(opt.expr_dir, 'web')
             self.img_dir = os.path.join(self.web_dir, 'images')
             print('create web directory %s...' % self.web_dir)
             util.mkdirs([self.web_dir, self.img_dir])
-        self.log_name = os.path.join(opt.checkpoints_dir, opt.name, 'loss_log.txt')
-        self.eval_log_name = os.path.join(opt.checkpoints_dir, opt.name, 'eval_log.txt')
-        with open(self.log_name, "a") as log_file:
+        self.log_name = os.path.join(opt.expr_dir, 'loss_log.txt')
+        self.eval_log_name = os.path.join(opt.expr_dir, 'eval_log.txt')
+        
+        loss_record = self.log_name if opt.isTrain else self.eval_log_name
+        state = 'Training' if opt.isTrain else 'Testing'
+        
+        with open(loss_record, "a") as log_file:
             now = time.strftime("%c")
-            log_file.write('================ Training Loss (%s) ================\n' % now)
+            log_file.write(f'================ {state} Loss (%s) ================\n' % now)
 
     # |visuals|: dictionary of images to display or save
     def display_current_results(self, visuals, epoch):
@@ -76,7 +80,7 @@ class Visualizer():
         if self.use_html: # save images to a html file
             for label, image_numpy in visuals.items():
                 img_path = os.path.join(self.img_dir, 'epoch%.3d_%s.png' % (epoch, label))
-                util.save_image(image_numpy, img_path)
+                util.save_image(image_numpy, img_path, label)
             # update website
             webpage = html.HTML(self.web_dir, 'Experiment name = %s' % self.name, reflesh=1)
             for n in range(epoch, 0, -1):
@@ -135,8 +139,8 @@ class Visualizer():
         )
 
     # errors: same format as |errors| of plotCurrentErrors
-    def print_current_errors(self, epoch, i, errors, t):
-        message = '(epoch: %d, iters: %d, time: %.3f) ' % (epoch, i, t)
+    def print_current_errors(self, epoch, total_epoch, i, errors, t):
+        message = '(epoch: %d/%d, iters: %d, time: %.3f) ' % (epoch, total_epoch, i, t)
         for k, v in errors.items():
             message += '%s: %.3f ' % (k, v)
 
