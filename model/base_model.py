@@ -76,7 +76,8 @@ class BaseModel():
         errors_ret = OrderedDict()
         for name in self.loss_names:
             if isinstance(name, str):
-                errors_ret[name] = getattr(self, 'loss_' + name).item()
+                if name == 'par' or name == 'par1':
+                    errors_ret[name] = getattr(self, 'loss_' + name).item()
         return errors_ret
 
     def get_current_eval_results(self):

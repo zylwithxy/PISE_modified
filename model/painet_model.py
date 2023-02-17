@@ -127,14 +127,20 @@ class Painet(BaseModel):
     def test(self):
         """Forward function used in test time"""
         img_gen, self.loss_reg, self.parsav  = self.net_G(self.input_P1, self.input_P2, self.input_BP1, self.input_BP2, self.input_SPL1, self.input_SPL2)
+        # parsing loss
+        label_P2 = self.label_P2.squeeze(1).long()
+        #print(self.input_SPL2.min(), self.input_SPL2.max(), self.parsav.min(), self.parsav.max())
+        self.loss_par = self.parLoss(self.parsav,label_P2)# * 20. 
+        self.loss_par1 = self.L1loss(self.parsav, self.input_SPL2)  * 100
+        
         ## test flow ##
 
-        self.save_results(img_gen, data_name='vis')
-        if self.opt.save_input or self.opt.phase == 'val':
-            self.save_results(self.input_P1, data_name='ref')
-            self.save_results(self.input_P2, data_name='gt')
-            result = torch.cat([self.input_P1, img_gen, self.input_P2], 3)
-            self.save_results(result, data_name='all')
+        # self.save_results(img_gen, data_name='vis')
+        # if self.opt.save_input or self.opt.phase == 'val':
+        #     self.save_results(self.input_P1, data_name='ref')
+        #     self.save_results(self.input_P2, data_name='gt')
+        #     result = torch.cat([self.input_P1, img_gen, self.input_P2], 3)
+        #     self.save_results(result, data_name='all')
                        
                 
 
