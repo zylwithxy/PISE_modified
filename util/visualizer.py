@@ -148,10 +148,20 @@ class Visualizer():
         with open(self.log_name, "a") as log_file:
             log_file.write('%s\n' % message)
 
-    def print_current_eval(self, epoch, i, score):
-        message = '(epoch: %d, iters: %d)' % (epoch, i)
+    def print_current_eval(self, epoch: int, score: dict, t):
+        message = '(epoch: %d, iters: %d)' % (epoch, t)
         for k, v in score.items():
             message += '%s: %.3f ' % (k, v)
+
+        print(message)
+        with open(self.eval_log_name, "a") as log_file:
+            log_file.write('%s\n' % message)
+            
+    def print_eval_metric(self, scores: dict):
+        
+        message = ''
+        for k, v in scores.items():
+            message += '%s: %.4f ' % (k, v)
 
         print(message)
         with open(self.eval_log_name, "a") as log_file:

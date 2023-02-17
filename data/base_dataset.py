@@ -21,6 +21,7 @@ class BaseDataset(data.Dataset):
         parser.add_argument('--angle', type=float, default=False)
         parser.add_argument('--shift', type=float, default=False)
         parser.add_argument('--scale', type=float, default=False)
+        parser.add_argument('--seg_map_visual_choice', type= str, default= 'horizontal', choices=['horizontal', 'vertical'], help= "choose the way for visualizing seg map in test set")
         return parser
 
     def initialize(self, opt):
