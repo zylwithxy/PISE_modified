@@ -11,6 +11,7 @@ class Visualizer():
         # self.opt = opt
         self.display_id = opt.display_id
         self.use_html = opt.isTrain and not opt.no_html
+        self.record_test = not opt.isTrain and opt.phase == 'test'
         self.win_size = opt.display_winsize
         self.name = opt.name
         if self.display_id > 0:
@@ -18,7 +19,7 @@ class Visualizer():
             self.vis = visdom.Visdom(port=opt.display_port, env=opt.display_env)
             self.display_single_pane_ncols = opt.display_single_pane_ncols
 
-        if self.use_html:
+        if self.use_html or self.record_test:
             self.web_dir = os.path.join(opt.expr_dir, 'web')
             self.img_dir = os.path.join(self.web_dir, 'images')
             print('create web directory %s...' % self.web_dir)
@@ -77,7 +78,7 @@ class Visualizer():
                                        win=self.display_id + idx)
                     idx += 1
 
-        if self.use_html: # save images to a html file
+        if self.use_html or self.record_test: # save images to a html file
             for label, image_numpy in visuals.items():
                 img_path = os.path.join(self.img_dir, 'epoch%.3d_%s.png' % (epoch, label))
                 util.save_image(image_numpy, img_path, label)
