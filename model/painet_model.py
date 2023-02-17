@@ -129,7 +129,7 @@ class Painet(BaseModel):
 
     def test(self):
         """Forward function used in test time"""
-        img_gen, self.loss_reg, self.parsav  = self.net_G(self.input_P1, self.input_P2, self.input_BP1, self.input_BP2, self.input_SPL1, self.input_SPL2)
+        self.img_gen, self.loss_reg, self.parsav  = self.net_G(self.input_P1, self.input_P2, self.input_BP1, self.input_BP2, self.input_SPL1, self.input_SPL2)
         # parsing loss
         label_P2 = self.label_P2.squeeze(1).long()
         #print(self.input_SPL2.min(), self.input_SPL2.max(), self.parsav.min(), self.parsav.max())
