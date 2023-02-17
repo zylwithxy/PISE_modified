@@ -88,6 +88,9 @@ class Painet(BaseModel):
                                 filter(lambda p: p.requires_grad, self.net_D.parameters())),
                                 lr=opt.lr*opt.ratio_g2d, betas=(0.9, 0.999))
             self.optimizers.append(self.optimizer_D)
+        else:
+            self.L1loss = torch.nn.L1Loss()
+            self.parLoss = CrossEntropyLoss2d()
 
         # load the pre-trained model and schedulers
         self.setup(opt)
